@@ -161,6 +161,7 @@ static const Key keys[] = {
     { 0, XF86XK_AudioRaiseVolume, spawn, {.v = volupcmd} },
     { 0, XF86XK_AudioLowerVolume, spawn, {.v = voldowncmd} },
     { 0, XF86XK_AudioMute,        spawn, {.v = volmutecmd} },
+    {MODKEY|ShiftMask, XK_s, spawn, SHCMD("flameshot gui") },
 
 
 };
