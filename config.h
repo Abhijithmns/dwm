@@ -1,7 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include <X11/XF86keysym.h> 
-static const char *brupcmd[] = { "brightnessctl", "set", "5%+", NULL };
-static const char *brdowncmd[] = { "brightnessctl", "set", "2%-", NULL };
+
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -92,6 +91,11 @@ static const char *dmenucmd[] = {
 };
 static const char *roficmd[] = { "rofi", "-show", "drun", NULL };
 static const char *todo[] = { "todo", NULL };
+static const char *brupcmd[]   = { "/home/abhijith/.local/bin/screenlight.sh", "up", NULL };
+static const char *brdowncmd[] = { "/home/abhijith/.local/bin/screenlight.sh", "down", NULL };
+static const char *volupcmd[]   = { "/home/abhijith/.local/bin/volume.sh", "up", NULL };
+static const char *voldowncmd[] = { "/home/abhijith/.local/bin/volume.sh", "down", NULL };
+static const char *volmutecmd[] = { "/home/abhijith/.local/bin/volume.sh", "mute", NULL };
 
 
 static const char *termcmd[]  = { "st", NULL };
@@ -154,9 +158,10 @@ static const Key keys[] = {
     { 0, XF86XK_MonBrightnessUp,  spawn,          {.v = brupcmd} },
     { 0, XF86XK_MonBrightnessDown, spawn,          {.v = brdowncmd} },
     /* volume */
-    { 0, XF86XK_AudioLowerVolume, spawn, SHCMD("pactl set-sink-volume @DEFAULT_SINK@ -5%") },
-    { 0, XF86XK_AudioRaiseVolume, spawn, SHCMD("pactl set-sink-volume @DEFAULT_SINK@ +5%") },
-    { 0, XF86XK_AudioMute,        spawn, SHCMD("pactl set-sink-mute @DEFAULT_SINK@ toggle") },
+    { 0, XF86XK_AudioRaiseVolume, spawn, {.v = volupcmd} },
+    { 0, XF86XK_AudioLowerVolume, spawn, {.v = voldowncmd} },
+    { 0, XF86XK_AudioMute,        spawn, {.v = volmutecmd} },
+
 
 };
 
