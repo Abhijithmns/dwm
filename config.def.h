@@ -1,7 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 #include <X11/XF86keysym.h> 
-static const char *brupcmd[] = { "brightnessctl", "set", "5%+", NULL };
-static const char *brdowncmd[] = { "brightnessctl", "set", "2%-", NULL };
+
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -12,18 +11,19 @@ static const unsigned int gappov    = 30;       /* vert outer gap between window
 static       int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "monospace:size=10" };
-static const char dmenufont[]       = "monospace:size=10";
+static const char *fonts[]          = { "Hack:size=10" };
+static const char dmenufont[]       = "Hack:size=10";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
-static const char *colors[][3]      = {
-	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
-};
+#include "/home/abhijith/.cache/wal/colors-wal-dwm.h"
+//static const char *colors[][3]      = {
+//	/*               fg         bg         border   */
+//	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
+//	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+//};
 
 /* tagging */
 static const char *tags[] = { "1", "2", "3", "4", "5", "6" };
@@ -82,12 +82,28 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+//static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[] = {
+    "dmenu_run",
+    "-m", dmenumon,
+    "-fn", dmenufont,
+    NULL
+};
+static const char *roficmd[] = { "rofi", "-show", "drun", NULL };
+static const char *todo[] = { "todo", NULL };
+static const char *brupcmd[]   = { "/home/abhijith/.local/bin/screenlight.sh", "up", NULL };
+static const char *brdowncmd[] = { "/home/abhijith/.local/bin/screenlight.sh", "down", NULL };
+static const char *volupcmd[]   = { "/home/abhijith/.local/bin/volume.sh", "up", NULL };
+static const char *voldowncmd[] = { "/home/abhijith/.local/bin/volume.sh", "down", NULL };
+static const char *volmutecmd[] = { "/home/abhijith/.local/bin/volume.sh", "mute", NULL };
+
+
 static const char *termcmd[]  = { "st", NULL };
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+    { MODKEY|ShiftMask,             XK_p,      spawn,          {.v = todo } },
+    { MODKEY, XK_p, spawn, {.v = roficmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
@@ -117,7 +133,7 @@ static const Key keys[] = {
 	{ MODKEY|Mod4Mask,              XK_0,      togglegaps,     {0} },
 	{ MODKEY|Mod4Mask|ShiftMask,    XK_0,      defaultgaps,    {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
-	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
+	{ MODKEY,             XK_q,      killclient,     {0} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
@@ -142,10 +158,11 @@ static const Key keys[] = {
     { 0, XF86XK_MonBrightnessUp,  spawn,          {.v = brupcmd} },
     { 0, XF86XK_MonBrightnessDown, spawn,          {.v = brdowncmd} },
     /* volume */
-    { 0, XF86XK_AudioLowerVolume, spawn, SHCMD("pactl set-sink-volume @DEFAULT_SINK@ -5%") },
-    { 0, XF86XK_AudioRaiseVolume, spawn, SHCMD("pactl set-sink-volume @DEFAULT_SINK@ +5%") },
-    { 0, XF86XK_AudioMute,        spawn, SHCMD("pactl set-sink-mute @DEFAULT_SINK@ toggle") },
-
+    { 0, XF86XK_AudioRaiseVolume, spawn, {.v = volupcmd} },
+    { 0, XF86XK_AudioLowerVolume, spawn, {.v = voldowncmd} },
+    { 0, XF86XK_AudioMute,        spawn, {.v = volmutecmd} },
+    {MODKEY|ShiftMask, XK_s, spawn, SHCMD("flameshot gui") },
+    { 0, XF86XK_PowerOff, spawn, SHCMD("~/.local/bin/powermenu") },
 };
 
 /* button definitions */

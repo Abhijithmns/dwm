@@ -162,8 +162,7 @@ static const Key keys[] = {
     { 0, XF86XK_AudioLowerVolume, spawn, {.v = voldowncmd} },
     { 0, XF86XK_AudioMute,        spawn, {.v = volmutecmd} },
     {MODKEY|ShiftMask, XK_s, spawn, SHCMD("flameshot gui") },
-
-
+    { 0, XF86XK_PowerOff, spawn, SHCMD("~/.local/bin/powermenu") },
 };
 
 /* button definitions */
