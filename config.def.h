@@ -40,9 +40,10 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating   focusopacity    unfocusopacity     monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           1.0,            inactiveopacity,   -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           activeopacity,  inactiveopacity,   -1 },
+	{ "Gimp",     NULL,       NULL,       0,            1,                          -1 },
+	{ "Firefox",  NULL,       NULL,       1 << 8,       0,             -1 },
 };
+
 
 /* layout(s) */
 static float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
@@ -192,11 +193,6 @@ static const Key keys[] = {
     {MODKEY|ShiftMask, XK_s, spawn, SHCMD("flameshot gui") },
     { 0, XF86XK_PowerOff, spawn, SHCMD("~/.local/bin/powermenu") },
     { MODKEY, XK_w, spawn, {.v = wallmenucmd } },
-            { MODKEY|ShiftMask,             XK_a,      changefocusopacity,   {.f = +0.025}},
-        { MODKEY|ShiftMask,             XK_s,      changefocusopacity,   {.f = -0.025}},
-	{ MODKEY|ShiftMask,             XK_z,      changeunfocusopacity, {.f = +0.025}},
-        { MODKEY|ShiftMask,             XK_x,      changeunfocusopacity, {.f = -0.025}},
-
 };
 
 /* button definitions */
