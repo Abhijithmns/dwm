@@ -106,9 +106,12 @@ static const char *volmutecmd[] = { "/home/abhijith/.local/bin/volume.sh", "mute
 static const char *wallmenucmd[] = {
     "/bin/sh", "-c", "~/bin/wallmenu", NULL
 };
-
-
 static const char *termcmd[]  = { "st", NULL };
+
+static const char *lockcmd[] = {
+    "betterlockscreen", "-l", NULL
+};
+
 
 /*
  * Xresources preferences to load at startup
@@ -193,6 +196,8 @@ static const Key keys[] = {
     {MODKEY|ShiftMask, XK_s, spawn, SHCMD("flameshot gui") },
     { 0, XF86XK_PowerOff, spawn, SHCMD("~/.local/bin/powermenu") },
     { MODKEY, XK_w, spawn, {.v = wallmenucmd } },
+    { MODKEY|ShiftMask, XK_l, spawn, {.v = lockcmd } },
+
 };
 
 /* button definitions */
