@@ -11,6 +11,10 @@ static const unsigned int gappov    = 30;       /* vert outer gap between window
 static       int smartgaps          = 0;        /* 1 means no outer gap when there is only one window */
 static int showbar            = 1;        /* 0 means no bar */
 static int topbar             = 1;        /* 0 means bottom bar */
+static const int usealtbar          = 1;        /* 1 means use non-dwm status bar */
+static const char *altbarclass      = "Polybar"; /* Alternate bar class name */
+static const char *alttrayname      = "tray";    /* Polybar tray instance name */
+static const char *altbarcmd        = "$HOME/bar.sh"; /* Alternate bar launch command */
 static const char *fonts[]          = { "Hack:size=10" };
 static const char dmenufont[]       = "Hack:size=10";
 static char normbgcolor[]           = "#222222";
@@ -106,9 +110,12 @@ static const char *volmutecmd[] = { "/home/abhijith/.local/bin/volume.sh", "mute
 static const char *wallmenucmd[] = {
     "/bin/sh", "-c", "~/bin/wallmenu", NULL
 };
-
-
 static const char *termcmd[]  = { "st", NULL };
+
+static const char *lockcmd[] = {
+    "betterlockscreen", "-l", NULL
+};
+
 
 /*
  * Xresources preferences to load at startup
@@ -193,6 +200,8 @@ static const Key keys[] = {
     {MODKEY|ShiftMask, XK_s, spawn, SHCMD("flameshot gui") },
     { 0, XF86XK_PowerOff, spawn, SHCMD("~/.local/bin/powermenu") },
     { MODKEY, XK_w, spawn, {.v = wallmenucmd } },
+    { MODKEY|ShiftMask, XK_l, spawn, {.v = lockcmd } },
+
 };
 
 /* button definitions */
