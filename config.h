@@ -117,6 +117,9 @@ static const char *lockcmd[] = {
     "betterlockscreen", "-l", "blur", NULL
 };
 
+static const char scratchpadname[] = "scratchpad";
+static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL }; 
+
 
 /*
  * Xresources preferences to load at startup
@@ -202,6 +205,7 @@ static const Key keys[] = {
     { 0, XF86XK_PowerOff, spawn, SHCMD("~/.local/bin/powermenu") },
     { MODKEY, XK_w, spawn, {.v = wallmenucmd } },
     { MODKEY|ShiftMask, XK_l, spawn, {.v = lockcmd } },
+    { MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
 
 };
 
