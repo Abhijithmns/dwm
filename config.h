@@ -15,7 +15,7 @@ static const int usealtbar          = 1;        /* 1 means use non-dwm status ba
 static const char *altbarclass      = "Polybar"; /* Alternate bar class name */
 static const char *alttrayname      = "tray";    /* Polybar tray instance name */
 static const char *altbarcmd        = "$HOME/bar.sh"; /* Alternate bar launch command */
-static const char *fonts[]          = { "Hack:size=10" };
+static const char *fonts[]          = { "JetBrainsMono Nerd Font:size=10" };
 static const char dmenufont[]       = "Hack:size=10";
 static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
@@ -45,6 +45,7 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   focusopacity    unfocusopacity     monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,                          -1 },
+    { "Nitrogen", NULL, NULL, 0, 1, -1 },
 	{ "Firefox",  NULL,       NULL,       1 << 8,       0,             -1 },
 };
 
@@ -113,7 +114,7 @@ static const char *wallmenucmd[] = {
 static const char *termcmd[]  = { "st", NULL };
 
 static const char *lockcmd[] = {
-    "betterlockscreen", "-l", NULL
+    "betterlockscreen", "-l", "blur", NULL
 };
 
 
