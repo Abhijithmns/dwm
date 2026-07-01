@@ -15,8 +15,8 @@ static const int usealtbar          = 1;        /* 1 means use non-dwm status ba
 static const char *altbarclass      = "Polybar"; /* Alternate bar class name */
 static const char *alttrayname      = "tray";    /* Polybar tray instance name */
 static const char *altbarcmd        = "$HOME/bar.sh"; /* Alternate bar launch command */
-static const char *fonts[]          = { "JetBrainsMono Nerd Font:size=10" };
-static const char dmenufont[]       = "Hack:size=10";
+static const char *fonts[]          = { "IosevkaTerm Nerd Font:size=10" };
+static const char dmenufont[]       = "JetBrainsMono Nerd Font:size=10";
 static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444";
 static char normfgcolor[]           = "#bbbbbb";
@@ -47,6 +47,7 @@ static const Rule rules[] = {
 	{ "Gimp",     NULL,       NULL,       0,            1,                          -1 },
     { "Nitrogen", NULL, NULL, 0, 1, -1 },
 	{ "Firefox",  NULL,       NULL,       1 << 8,       0,             -1 },
+    { "copyq", NULL, NULL, 0, 1, -1 },
 };
 
 
@@ -206,7 +207,7 @@ static const Key keys[] = {
     { MODKEY, XK_w, spawn, {.v = wallmenucmd } },
     { MODKEY|ShiftMask, XK_l, spawn, {.v = lockcmd } },
     { MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
-
+    { MODKEY, XK_c, spawn, SHCMD("copyq menu") },
 };
 
 /* button definitions */
