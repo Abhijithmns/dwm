@@ -255,6 +255,7 @@ static void setdesktopnames(void);
 static void setfocus(Client *c);
 static void setviewport(void);
 static void setfullscreen(Client *c, int fullscreen);
+static void fullscreen(const Arg *arg);
 static void setlayout(const Arg *arg);
 static void setlayoutsafe(const Arg *arg);
 static void setcfact(const Arg *arg);
@@ -1916,6 +1917,14 @@ setfullscreen(Client *c, int fullscreen)
 	}
 }
 
+Layout *last_layout;
+void
+fullscreen(const Arg *arg)
+{
+	if (!selmon->sel)
+		return;
+	setfullscreen(selmon->sel, !selmon->sel->isfullscreen);
+}
 void
 setlayout(const Arg *arg)
 {
