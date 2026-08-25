@@ -28,6 +28,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -185,6 +186,7 @@ typedef struct {
 } ResourcePref;
 
 /* function declarations */
+static void alttab(const Arg *arg);
 static void applyrules(Client *c);
 static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
 static void arrange(Monitor *m);
@@ -212,6 +214,7 @@ static void expose(XEvent *e);
 static void focus(Client *c);
 static void focusin(XEvent *e);
 static void focusmon(const Arg *arg);
+static void focusnext(const Arg *arg);
 static void focusstack(const Arg *arg);
 static Atom getatomprop(Client *c, Atom prop);
 static int getrootptr(int *x, int *y);
@@ -293,6 +296,7 @@ static void updatewmhints(Client *c);
 static void view(const Arg *arg);
 static Client *wintoclient(Window w);
 static Monitor *wintomon(Window w);
+static void winview(const Arg* arg);
 static int wmclasscontains(Window win, const char *class, const char *name);
 static int xerror(Display *dpy, XErrorEvent *ee);
 static int xerrordummy(Display *dpy, XErrorEvent *ee);
@@ -348,6 +352,8 @@ static Window root, wmcheckwin;
 
 #include "ipc.h"
 
+static int alt_tab_direction = 0;
+
 /* configuration, allows nested code to access above variables */
 #include "config.h"
 
@@ -363,6 +369,79 @@ static unsigned int scratchtag = 1 << LENGTH(tags);
 struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
 
 /* function implementations */
+
+static void
+alttab(const Arg *arg) {
+
+	view(&(Arg){ .ui = ~0 });
+	focusnext(&(Arg){ .i = alt_tab_direction });
+
+	int grabbed = 1;
+	int grabbed_keyboard = 1000;
+	for (int i = 0; i < 100; i += 1) {
+		struct timespec ts;
+		ts.tv_sec = 0;
+		ts.tv_nsec = 1000000;
+
+		if (grabbed_keyboard != GrabSuccess) {
+			grabbed_keyboard = XGrabKeyboard(dpy, DefaultRootWindow(dpy), True,
+											 GrabModeAsync, GrabModeAsync, CurrentTime);
+		}
+		if (grabbed_keyboard == GrabSuccess) {
+			XGrabButton(dpy, AnyButton, AnyModifier, None, False,
+						BUTTONMASK, GrabModeAsync, GrabModeAsync,
+						None, None);
+			break;
+		}
+		nanosleep(&ts, NULL);
+		if (i == 100 - 1)
+			grabbed = 0;
+	}
+
+	XEvent event;
+	Client *c;
+	Monitor *m;
+	XButtonPressedEvent *ev;
+
+	while (grabbed) {
+		XNextEvent(dpy, &event);
+		switch (event.type) {
+		case KeyPress:
+			if (event.xkey.keycode == tabCycleKey)
+				focusnext(&(Arg){ .i = alt_tab_direction });
+			break;
+		case KeyRelease:
+			if (event.xkey.keycode == tabModKey) {
+				XUngrabKeyboard(dpy, CurrentTime);
+				XUngrabButton(dpy, AnyButton, AnyModifier, None);
+				grabbed = 0;
+				alt_tab_direction = !alt_tab_direction;
+				winview(0);
+			}
+			break;
+	    case ButtonPress:
+			ev = &(event.xbutton);
+			if ((m = wintomon(ev->window)) && m != selmon) {
+				unfocus(selmon->sel, 1);
+				selmon = m;
+				focus(NULL);
+			}
+			if ((c = wintoclient(ev->window)))
+				focus(c);
+			XAllowEvents(dpy, AsyncBoth, CurrentTime);
+			break;
+		case ButtonRelease:
+			XUngrabKeyboard(dpy, CurrentTime);
+			XUngrabButton(dpy, AnyButton, AnyModifier, None);
+			grabbed = 0;
+			alt_tab_direction = !alt_tab_direction;
+			winview(0);
+			break;
+		}
+	}
+	return;
+}
+
 void
 applyrules(Client *c)
 {
@@ -995,6 +1074,28 @@ focusmon(const Arg *arg)
 	unfocus(selmon->sel, 0);
 	selmon = m;
 	focus(NULL);
+}
+
+static void
+focusnext(const Arg *arg) {
+	Monitor *m;
+	Client *c;
+	m = selmon;
+	c = m->sel;
+
+	if (arg->i) {
+		if (c->next)
+			c = c->next;
+		else
+			c = m->clients;
+	} else {
+		Client *last = c;
+		if (last == m->clients)
+			last = NULL;
+		for (c = m->clients; c->next != last; c = c->next);
+	}
+	focus(c);
+	return;
 }
 
 void
@@ -2707,6 +2808,26 @@ wmclasscontains(Window win, const char *class, const char *name)
 		XFree(ch.res_name);
 
 	return res;
+}
+
+/* Selects for the view of the focused window. The list of tags */
+/* to be displayed is matched to the focused window tag list. */
+void
+winview(const Arg* arg){
+	Window win, win_r, win_p, *win_c;
+	unsigned nc;
+	int unused;
+	Client* c;
+	Arg a;
+
+	if (!XGetInputFocus(dpy, &win, &unused)) return;
+	while(XQueryTree(dpy, win, &win_r, &win_p, &win_c, &nc)
+	      && win_p != win_r) win = win_p;
+
+	if (!(c = wintoclient(win))) return;
+
+	a.ui = c->tags;
+	view(&a);
 }
 
 /* There's no way to check accesses to destroyed windows, thus those cases are

@@ -3,6 +3,8 @@
 
 /* appearance */
 static unsigned int borderpx  = 1;        /* border pixel of windows */
+static const unsigned int tabModKey = 0x40;
+static const unsigned int tabCycleKey = 0x17;
 static unsigned int snap      = 32;       /* snap pixel */
 static const unsigned int gappih    = 8;       /* horiz inner gap between windows */
 static const unsigned int gappiv    = 7;       /* vert inner gap between windows */
@@ -75,7 +77,7 @@ static const Layout layouts[] = {
 	{ "---",      horizgrid },
 	{ ":::",      gaplessgrid },
 	{ "|M|",      centeredmaster },
-    { ">M>",      centeredfloatingmaster },
+	{ ">M>",      centeredfloatingmaster },
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ NULL,       NULL },
 };
@@ -197,6 +199,9 @@ static const Key keys[] = {
 	TAGKEYS(                        XK_8,                      7)
 	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+    { MODKEY,                       XK_o,      winview,        {0} },
+	{ Mod1Mask,                     XK_Tab,    alttab,         {0} },
+
     { 0, XF86XK_MonBrightnessUp,  spawn,          {.v = brupcmd} },
     { 0, XF86XK_MonBrightnessDown, spawn,          {.v = brdowncmd} },
     /* volume */
@@ -209,7 +214,6 @@ static const Key keys[] = {
     { MODKEY|ShiftMask, XK_l, spawn, {.v = lockcmd } },
     { MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
     { MODKEY, XK_c, spawn, SHCMD("copyq menu") },
-    { MODKEY, XK_s, spawn, SHCMD("~/.local/bin/xd")},
 };
 
 /* button definitions */
