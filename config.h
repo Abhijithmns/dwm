@@ -75,7 +75,7 @@ static const Layout layouts[] = {
 	{ "---",      horizgrid },
 	{ ":::",      gaplessgrid },
 	{ "|M|",      centeredmaster },
-	{ ">M>",      centeredfloatingmaster },
+    { ">M>",      centeredfloatingmaster },
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ NULL,       NULL },
 };
@@ -209,6 +209,7 @@ static const Key keys[] = {
     { MODKEY|ShiftMask, XK_l, spawn, {.v = lockcmd } },
     { MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
     { MODKEY, XK_c, spawn, SHCMD("copyq menu") },
+    { MODKEY, XK_s, spawn, SHCMD("~/.local/bin/xd")},
 };
 
 /* button definitions */
